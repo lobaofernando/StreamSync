@@ -1,27 +1,20 @@
-using System;
-using System.Net.Http;
-using System.Runtime.Intrinsics.X86;
-using System.Threading.Tasks;
+ï»¿using FuzzyString;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore.Metadata.Internal;
-using Microsoft.Extensions.Logging;
-using Microsoft.VisualBasic;
-using Newtonsoft.Json;
-using FuzzyString;
 
-namespace NZWalksAPI.Controllers
+namespace StreamSync.Controllers
 {
+    [Route("api/[controller]")]
     [ApiController]
-    [Route("[controller]")]
-    public class DeezerController : ControllerBase
+    public class SpotifyController : ControllerBase
     {
 
-        private readonly ILogger<DeezerController> _logger;
+        private readonly ILogger<SpotifyController> _logger;
         private readonly IHttpClientFactory _httpClientFactory;
 
-        private readonly string deezerApiUrl = "http://localhost:8082/integracao/deezer/";
+        private readonly string spotifyApiUrl = "http://localhost:8082/integracao/spotify/";
 
-        public DeezerController(ILogger<DeezerController> logger, IHttpClientFactory httpClientFactory)
+        public SpotifyController(ILogger<SpotifyController> logger, IHttpClientFactory httpClientFactory)
         {
             _logger = logger;
             _httpClientFactory = httpClientFactory;
@@ -34,13 +27,13 @@ namespace NZWalksAPI.Controllers
         }
 
         [HttpGet("Procurar/{consulta}/{tipo}")]
-        public async Task<IActionResult> DeezerSearch(string consulta, string tipo)
+        public async Task<IActionResult> SpotifySearch(string consulta, string tipo)
         {
             var httpClient = _httpClientFactory.CreateClient();
 
-            var request = deezerApiUrl + "procurar?q=" + tipo + ":%22" + Uri.EscapeDataString(consulta) + "%22";
+            var request = spotifyApiUrl + "procurar?q=" + consulta + "&type=" + tipo;
 
-            // Faça a requisição HTTP para a API da Deezer
+            // FaÃ§a a requisiÃ§Ã£o HTTP para a API da Spotify
             HttpResponseMessage response = await httpClient.GetAsync(request);
 
             // Retornar conteudo como string/json
@@ -51,13 +44,13 @@ namespace NZWalksAPI.Controllers
         }
 
         [HttpGet("Acompanhar/{id}")]
-        public async Task<IActionResult> DeezerTrilha(string id)
+        public async Task<IActionResult> SpotifyTrilha(string id)
         {
             var httpClient = _httpClientFactory.CreateClient();
 
-            var request = deezerApiUrl + "Acompanhar/" + id;
+            var request = spotifyApiUrl + "Acompanhar/" + id;
 
-            // Faça a requisição HTTP para a API da Deezer
+            // FaÃ§a a requisiÃ§Ã£o HTTP para a API da Spotify
             HttpResponseMessage response = await httpClient.GetAsync(request);
 
             // Retornar conteudo como string/json
@@ -68,13 +61,13 @@ namespace NZWalksAPI.Controllers
         }
 
         [HttpGet("Album/{id}/{mercado}")]
-        public async Task<IActionResult> DeezerAlbum(string id, string mercado)
+        public async Task<IActionResult> SpotifyAlbum(string id, string mercado)
         {
             var httpClient = _httpClientFactory.CreateClient();
 
-            var request = deezerApiUrl + "album/" + id + "&market=" + mercado;
+            var request = spotifyApiUrl + "album/" + id + "&market=" + mercado;
 
-            // Faça a requisição HTTP para a API da Deezer
+            // FaÃ§a a requisiÃ§Ã£o HTTP para a API da Spotify
             HttpResponseMessage response = await httpClient.GetAsync(request);
 
             // Retornar conteudo como string/json
@@ -85,13 +78,13 @@ namespace NZWalksAPI.Controllers
         }
 
         [HttpGet("Lista_de_musica/{id}/{mercado}")]
-        public async Task<IActionResult> DeezerLista_de_musica(string id)
+        public async Task<IActionResult> SpotifyLista_de_musica(string id)
         {
             var httpClient = _httpClientFactory.CreateClient();
 
-            var request = deezerApiUrl + "Lista_de_musica/" + id;
+            var request = spotifyApiUrl + "Lista_de_musica/" + id;
 
-            // Faça a requisição HTTP para a API da Deezer
+            // FaÃ§a a requisiÃ§Ã£o HTTP para a API da Spotify
             HttpResponseMessage response = await httpClient.GetAsync(request);
 
             // Retornar conteudo como string/json
@@ -120,19 +113,5 @@ namespace NZWalksAPI.Controllers
             return maisSemelhante;
         }
 
-    }
-
-    // Modelo para representar a resposta da Deezer
-    public class DeezerSearchResult
-    {
-        // Adicione propriedades conforme necessário para mapear a resposta da Deezer
-        // Exemplo: public List<DeezerTrack> Tracks { get; set; }
-    }
-
-    // Exemplo de modelo para representar uma faixa na resposta da Deezer
-    public class DeezerTrack
-    {
-        // Adicione propriedades conforme necessário para mapear os detalhes da faixa
-        // Exemplo: public string Title { get; set; }
     }
 }
