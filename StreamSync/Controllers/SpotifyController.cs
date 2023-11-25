@@ -1,6 +1,5 @@
-﻿using FuzzyString;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
+using StreamSync.Services.Interfaces;
 
 namespace StreamSync.Controllers
 {
@@ -8,109 +7,54 @@ namespace StreamSync.Controllers
     [ApiController]
     public class SpotifyController : ControllerBase
     {
+        private readonly ISpotifyApiService _spotiftApiService;
+        private readonly IStreamSyncService _streamSyncService;
 
-        private readonly ILogger<SpotifyController> _logger;
-        private readonly IHttpClientFactory _httpClientFactory;
 
-        private readonly string spotifyApiUrl = "http://localhost:8082/integracao/spotify/";
-
-        public SpotifyController(ILogger<SpotifyController> logger, IHttpClientFactory httpClientFactory)
+        public SpotifyController(ISpotifyApiService spotiftApiService, IStreamSyncService streamSyncService)
         {
-            _logger = logger;
-            _httpClientFactory = httpClientFactory;
+            _spotiftApiService = spotiftApiService;
+            _streamSyncService = streamSyncService;
         }
 
-        [HttpGet("/Teste")]
-        public IActionResult Teste()
+        [HttpGet("Converter/{link}")]
+        public async Task<IActionResult> Converter(string link)
         {
-            return Ok("teste ok");
+            var resultado = await _streamSyncService.Converter(link);
+
+            return Ok(resultado);
         }
 
         [HttpGet("Procurar/{consulta}/{tipo}")]
-        public async Task<IActionResult> SpotifySearch(string consulta, string tipo)
+        public async Task<IActionResult> Procurar(string consulta, string tipo)
         {
-            var httpClient = _httpClientFactory.CreateClient();
+            var resultado = await _spotiftApiService.Procurar(consulta, tipo);
 
-            var request = spotifyApiUrl + "procurar?q=" + consulta + "&type=" + tipo;
-
-            // Faça a requisição HTTP para a API da Spotify
-            HttpResponseMessage response = await httpClient.GetAsync(request);
-
-            // Retornar conteudo como string/json
-            string conteudo = await response.Content.ReadAsStringAsync();
-
-            // Retorne os resultados para o cliente
-            return Ok(conteudo);
+            return Ok(resultado);
         }
 
-        [HttpGet("Acompanhar/{id}")]
-        public async Task<IActionResult> SpotifyTrilha(string id)
+        [HttpGet("Trilha/{id}")]
+        public async Task<IActionResult> Trilha(string id)
         {
-            var httpClient = _httpClientFactory.CreateClient();
+            var resultado = await _spotiftApiService.Trilha(id);
 
-            var request = spotifyApiUrl + "Acompanhar/" + id;
-
-            // Faça a requisição HTTP para a API da Spotify
-            HttpResponseMessage response = await httpClient.GetAsync(request);
-
-            // Retornar conteudo como string/json
-            string conteudo = await response.Content.ReadAsStringAsync();
-
-            // Retorne os resultados para o cliente
-            return Ok(conteudo);
+            return Ok(resultado);
         }
 
         [HttpGet("Album/{id}/{mercado}")]
-        public async Task<IActionResult> SpotifyAlbum(string id, string mercado)
+        public async Task<IActionResult> Album(string id, string mercado)
         {
-            var httpClient = _httpClientFactory.CreateClient();
+            var resultado = await _spotiftApiService.Album(id, mercado);
 
-            var request = spotifyApiUrl + "album/" + id + "&market=" + mercado;
-
-            // Faça a requisição HTTP para a API da Spotify
-            HttpResponseMessage response = await httpClient.GetAsync(request);
-
-            // Retornar conteudo como string/json
-            string conteudo = await response.Content.ReadAsStringAsync();
-
-            // Retorne os resultados para o cliente
-            return Ok(conteudo);
+            return Ok(resultado);
         }
 
         [HttpGet("Lista_de_musica/{id}/{mercado}")]
-        public async Task<IActionResult> SpotifyLista_de_musica(string id)
+        public async Task<IActionResult> Lista_de_musica(string id)
         {
-            var httpClient = _httpClientFactory.CreateClient();
+            var resultado = await _spotiftApiService.Lista_de_musica(id);
 
-            var request = spotifyApiUrl + "Lista_de_musica/" + id;
-
-            // Faça a requisição HTTP para a API da Spotify
-            HttpResponseMessage response = await httpClient.GetAsync(request);
-
-            // Retornar conteudo como string/json
-            string conteudo = await response.Content.ReadAsStringAsync();
-
-            // Retorne os resultados para o cliente
-            return Ok(conteudo);
-        }
-
-        static string EncontrarStringMaisSemelhante(string stringOriginal, List<string> stringsComparacao)
-        {
-            string maisSemelhante = null;
-            int menorDistancia = int.MaxValue;
-
-            foreach (var str in stringsComparacao)
-            {
-                int distancia = str.LevenshteinDistance(stringOriginal);
-
-                if (distancia < menorDistancia)
-                {
-                    menorDistancia = distancia;
-                    maisSemelhante = str;
-                }
-            }
-
-            return maisSemelhante;
+            return Ok(resultado);
         }
 
     }

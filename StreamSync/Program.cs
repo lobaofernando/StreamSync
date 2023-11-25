@@ -1,14 +1,15 @@
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
 using NZWalksAPI.Data;
 using NZWalksAPI.Mappings;
 using NZWalksAPI.Repositories;
+using StreamSync.Services;
+using StreamSync.Services.Interfaces;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-
 builder.Services.AddControllers();
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
@@ -17,7 +18,10 @@ builder.Services.AddDbContext<NZWalksDbContext>(options =>
 options.UseSqlServer(builder.Configuration.GetConnectionString("NZWalksConnectionString")));
 
 // injetando repositório SQL SERVER
-builder.Services.AddScoped<IRegionRepository, SQLRegionRepository>();
+builder.Services.AddScoped<IRegionRepository, InMemoryRepository>();
+builder.Services.AddScoped<ISpotifyApiService, SpotifyApiService>();
+builder.Services.AddScoped<IDeezerApiService, DeezerApiService>();
+builder.Services.AddScoped<IStreamSyncService, StreamSyncService>();
 
 //// repository inmemory para testes
 //builder.Services.AddScoped<IRegionRepository, InMemoryRepository>();

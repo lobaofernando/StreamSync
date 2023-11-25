@@ -1,138 +1,60 @@
-using System;
-using System.Net.Http;
-using System.Runtime.Intrinsics.X86;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore.Metadata.Internal;
-using Microsoft.Extensions.Logging;
-using Microsoft.VisualBasic;
-using Newtonsoft.Json;
-using FuzzyString;
+using StreamSync.Services.Interfaces;
 
-namespace NZWalksAPI.Controllers
+namespace StreamSync.Controllers
 {
     [ApiController]
     [Route("[controller]")]
     public class DeezerController : ControllerBase
     {
+        private readonly IDeezerApiService _deezerApiService;
+        private readonly IStreamSyncService _streamSyncService;
 
-        private readonly ILogger<DeezerController> _logger;
-        private readonly IHttpClientFactory _httpClientFactory;
-
-        private readonly string deezerApiUrl = "http://localhost:8082/integracao/deezer/";
-
-        public DeezerController(ILogger<DeezerController> logger, IHttpClientFactory httpClientFactory)
+        public DeezerController(IDeezerApiService deezerApiService, IStreamSyncService streamSyncService)
         {
-            _logger = logger;
-            _httpClientFactory = httpClientFactory;
+            _deezerApiService = deezerApiService;
+            _streamSyncService = streamSyncService;
         }
 
-        [HttpGet("/Teste")]
-        public IActionResult Teste()
+        [HttpGet("Converter/{link}")]
+        public async Task<IActionResult> Converter(string link)
         {
-            return Ok("teste ok");
+            var resultado = await _deezerApiService.Link(link);
+
+            return Ok(resultado);
         }
 
         [HttpGet("Procurar/{consulta}/{tipo}")]
-        public async Task<IActionResult> DeezerSearch(string consulta, string tipo)
+        public async Task<IActionResult> Procurar(string consulta, string tipo)
         {
-            var httpClient = _httpClientFactory.CreateClient();
+            var resultado = await _deezerApiService.Procurar(consulta, tipo);
 
-            var request = deezerApiUrl + "procurar?q=" + tipo + ":%22" + Uri.EscapeDataString(consulta) + "%22";
-
-            // Faça a requisição HTTP para a API da Deezer
-            HttpResponseMessage response = await httpClient.GetAsync(request);
-
-            // Retornar conteudo como string/json
-            string conteudo = await response.Content.ReadAsStringAsync();
-
-            // Retorne os resultados para o cliente
-            return Ok(conteudo);
+            return Ok(resultado);
         }
 
-        [HttpGet("Acompanhar/{id}")]
-        public async Task<IActionResult> DeezerTrilha(string id)
+        [HttpGet("Trilha/{id}")]
+        public async Task<IActionResult> Trilha(Int64 id)
         {
-            var httpClient = _httpClientFactory.CreateClient();
+            var resultado = await _deezerApiService.Trilha(id);
 
-            var request = deezerApiUrl + "Acompanhar/" + id;
-
-            // Faça a requisição HTTP para a API da Deezer
-            HttpResponseMessage response = await httpClient.GetAsync(request);
-
-            // Retornar conteudo como string/json
-            string conteudo = await response.Content.ReadAsStringAsync();
-
-            // Retorne os resultados para o cliente
-            return Ok(conteudo);
+            return Ok(resultado);
         }
 
         [HttpGet("Album/{id}/{mercado}")]
-        public async Task<IActionResult> DeezerAlbum(string id, string mercado)
+        public async Task<IActionResult> Album(Int64 id, string mercado)
         {
-            var httpClient = _httpClientFactory.CreateClient();
+            var resultado = await _deezerApiService.Album(id, mercado);
 
-            var request = deezerApiUrl + "album/" + id + "&market=" + mercado;
-
-            // Faça a requisição HTTP para a API da Deezer
-            HttpResponseMessage response = await httpClient.GetAsync(request);
-
-            // Retornar conteudo como string/json
-            string conteudo = await response.Content.ReadAsStringAsync();
-
-            // Retorne os resultados para o cliente
-            return Ok(conteudo);
+            return Ok(resultado);
         }
 
         [HttpGet("Lista_de_musica/{id}/{mercado}")]
-        public async Task<IActionResult> DeezerLista_de_musica(string id)
+        public async Task<IActionResult> Lista_de_musica(Int64 id)
         {
-            var httpClient = _httpClientFactory.CreateClient();
+            var resultado = await _deezerApiService.Lista_de_musica(id);
 
-            var request = deezerApiUrl + "Lista_de_musica/" + id;
-
-            // Faça a requisição HTTP para a API da Deezer
-            HttpResponseMessage response = await httpClient.GetAsync(request);
-
-            // Retornar conteudo como string/json
-            string conteudo = await response.Content.ReadAsStringAsync();
-
-            // Retorne os resultados para o cliente
-            return Ok(conteudo);
+            return Ok(resultado);
         }
 
-        static string EncontrarStringMaisSemelhante(string stringOriginal, List<string> stringsComparacao)
-        {
-            string maisSemelhante = null;
-            int menorDistancia = int.MaxValue;
-
-            foreach (var str in stringsComparacao)
-            {
-                int distancia = str.LevenshteinDistance(stringOriginal);
-
-                if (distancia < menorDistancia)
-                {
-                    menorDistancia = distancia;
-                    maisSemelhante = str;
-                }
-            }
-
-            return maisSemelhante;
-        }
-
-    }
-
-    // Modelo para representar a resposta da Deezer
-    public class DeezerSearchResult
-    {
-        // Adicione propriedades conforme necessário para mapear a resposta da Deezer
-        // Exemplo: public List<DeezerTrack> Tracks { get; set; }
-    }
-
-    // Exemplo de modelo para representar uma faixa na resposta da Deezer
-    public class DeezerTrack
-    {
-        // Adicione propriedades conforme necessário para mapear os detalhes da faixa
-        // Exemplo: public string Title { get; set; }
     }
 }
