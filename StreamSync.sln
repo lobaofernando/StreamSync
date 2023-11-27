@@ -5,6 +5,8 @@ VisualStudioVersion = 17.6.33815.320
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "StreamSync", "StreamSync\StreamSync.csproj", "{8273C78F-5358-4E5F-A3FF-DEFE68D2B327}"
 EndProject
+Project("{E53339B2-1760-4266-BCC7-CA923CBCF16C}") = "docker-compose", "docker-compose.dcproj", "{04737A44-906E-4342-A00C-ECC98E537CAE}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -15,6 +17,10 @@ Global
 		{8273C78F-5358-4E5F-A3FF-DEFE68D2B327}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{8273C78F-5358-4E5F-A3FF-DEFE68D2B327}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{8273C78F-5358-4E5F-A3FF-DEFE68D2B327}.Release|Any CPU.Build.0 = Release|Any CPU
+		{04737A44-906E-4342-A00C-ECC98E537CAE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{04737A44-906E-4342-A00C-ECC98E537CAE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{04737A44-906E-4342-A00C-ECC98E537CAE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{04737A44-906E-4342-A00C-ECC98E537CAE}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -1,7 +1,4 @@
-﻿using FuzzyString;
-using Microsoft.AspNetCore.Mvc;
-using StreamSync.Controllers;
-using StreamSync.Services.Interfaces;
+﻿using StreamSync.Services.Interfaces;
 
 namespace StreamSync.Services
 {
@@ -9,7 +6,7 @@ namespace StreamSync.Services
     {
         private readonly IHttpClientFactory _httpClientFactory;
 
-        private readonly static string ApiUrl = "http://localhost:8081/integracao/spotify/";
+        private readonly static string ApiUrl = "http://plugin-spotify:8081/integracao/spotify/";
 
         public SpotifyApiService(IHttpClientFactory httpClientFactory)
         {

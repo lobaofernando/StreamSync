@@ -7,7 +7,7 @@ namespace StreamSync.Services
     {
         private readonly IHttpClientFactory _httpClientFactory;
 
-        private readonly static string ApiUrl = "http://localhost:8082/integracao/deezer/";
+        private readonly static string ApiUrl = "http://plugin-deezer:8082/integracao/deezer/";
 
         public DeezerApiService(IHttpClientFactory httpClientFactory)
         {

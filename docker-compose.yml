@@ -1,0 +1,8 @@
+version: '3.4'
+
+services:
+  streamsync:
+    image: ${DOCKER_REGISTRY-}streamsync
+    build:
+      context: .
+      dockerfile: StreamSync/Dockerfile
